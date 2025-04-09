@@ -1,23 +1,30 @@
-import express from 'express';
-import morgan from 'morgan';
-import helmet from 'helmet';
+import express from "express";
+import helmet from "helmet";
+import morgan from "morgan";
 
-import * as middlewares from './middlewares';
-import MessageResponse from './interfaces/MessageResponse';
+require("dotenv").config();
 
-require('dotenv').config();
+import MessageResponse from "./interfaces/MessageResponse";
+
+// Middlewares
+import * as middlewares from "./middlewares";
+
+// Routers
+import receiptsRouter from "./routes/receipts";
 
 const app = express();
 
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(helmet());
 app.use(express.json());
 
-app.get<{}, MessageResponse>('/', (req, res) => {
+app.get<{}, MessageResponse>("/", (req, res) => {
   res.json({
-    message: 'Receipts Processing Service is running',
+    message: "Receipts Processing Service is running",
   });
 });
+
+app.use("/receipts", receiptsRouter);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

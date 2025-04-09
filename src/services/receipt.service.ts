@@ -22,7 +22,7 @@ export async function saveScoredReceipt(score: number) {
  * @param id - The ID of the receipt
  * @returns The score of the receipt
  */
-export async function getScoredReceipt(id: string) {
+export async function getReceiptPoints(id: string) {
   return receiptScoreStore.get(id);
 }
 
