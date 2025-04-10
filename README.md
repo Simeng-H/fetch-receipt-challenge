@@ -4,6 +4,8 @@ This repository contains an implementation of the [Fetch Receipt Processing Chal
 
 ## Setup for running as a container
 
+The built image runs on port 8080.
+
 ```bash
 docker build -t fetch-receipt-challenge .
 docker run -p 8080:8080 fetch-receipt-challenge
