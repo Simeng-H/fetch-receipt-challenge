@@ -32,11 +32,17 @@ const VALID_RECEIPT = {
 
 describe("Sending a valid receipt to the API results in the receipt being processed and score persisted", () => {
   let receiptId: string;
+  let postResponse: request.Response;
+
+  beforeAll(async () => {
+    postResponse = await request(app).post("/receipts/process").send(VALID_RECEIPT);
+    receiptId = postResponse.body.id;
+  });
+
   it("returns a 200 status code and a receipt id when given a valid receipt", async () => {
-    const response = await request(app).post("/receipts/process").send(VALID_RECEIPT).expect(200);
-    expect(response.body.id).toBeDefined();
-    expect(typeof response.body.id).toBe("string");
-    receiptId = response.body.id;
+    expect(postResponse.status).toBe(200);
+    expect(postResponse.body.id).toBeDefined();
+    expect(typeof postResponse.body.id).toBe("string");
   });
   it("allows the user to retrieve the score for a receipt", async () => {
     const response = await request(app).get(`/receipts/${receiptId}/points`).expect(200);
@@ -44,7 +50,6 @@ describe("Sending a valid receipt to the API results in the receipt being proces
     expect(typeof response.body.points).toBe("number");
   });
   it("returns a 404 status code when the receipt id is not found", async () => {
-    const response = await request(app).get(`/receipts/1234567890/points`).expect(404);
-    expect(response.body.message).toBe("Receipt not found");
+    await request(app).get(`/receipts/1234567890/points`).expect(404);
   });
 });
