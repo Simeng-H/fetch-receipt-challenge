@@ -22,7 +22,7 @@ export async function saveReceiptScore(score: number) {
  * @param id - The ID of the receipt
  * @returns The score of the receipt
  */
-export async function getReceiptPoints(id: string) {
+export function getReceiptPoints(id: string) {
   return receiptScoreStore.get(id);
 }
 
@@ -45,7 +45,7 @@ export async function saveAndScoreReceipt(receipt: Receipt) {
  * @pre receipt is of a valid format
  * @returns The total score of the receipt
  */
-function ScoreReceipt(receipt: Receipt) {
+export function ScoreReceipt(receipt: Receipt) {
   // 1 point for every alphanumeric character in the retailer name
   const retailerNameScore = [...receipt.retailer].filter((char) => /[a-zA-Z0-9]/.test(char)).length;
 
