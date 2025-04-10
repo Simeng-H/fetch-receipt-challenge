@@ -4,7 +4,7 @@ import morgan from "morgan";
 
 require("dotenv").config();
 
-import MessageResponse from "./interfaces/MessageResponse";
+import MessageResponse from "./interfaces/message-response.interface";
 
 // Middlewares
 import * as middlewares from "./middlewares";
