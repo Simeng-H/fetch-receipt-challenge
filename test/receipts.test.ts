@@ -52,4 +52,7 @@ describe("Sending a valid receipt to the API results in the receipt being proces
   it("returns a 404 status code when the receipt id is not found", async () => {
     await request(app).get(`/receipts/1234567890/points`).expect(404);
   });
+  it("returns a 400 status code when the receipt is not valid", async () => {
+    await request(app).post("/receipts/process").send({}).expect(400);
+  });
 });
