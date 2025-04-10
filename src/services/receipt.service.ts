@@ -64,24 +64,10 @@ export function calculatePointsForReceipt(receipt: Receipt) {
     .reduce((acc, item) => acc + Math.ceil(item.price * 0.2), 0);
 
   // 6 points if day of purchase is odd
-  let oddDayScore = 0;
-  try {
-    const purchaseDate = new Date(receipt.purchaseDate);
-    const isOddDay = purchaseDate.getDate() % 2 === 1;
-    oddDayScore = isOddDay ? 6 : 0;
-  } catch (error) {
-    console.error("Error parsing purchase date:", error);
-  }
+  const oddDayScore = receipt.purchaseDate.getDate() % 2 === 1 ? 6 : 0;
 
   // 10 points if time of purchase is after 2:00pm and before 4:00pm
-  let timeOfPurchaseScore = 0;
-  try {
-    const purchaseTime = new Date(`1970-01-01T${receipt.purchaseTime}`);
-    const isBetween2And4 = purchaseTime.getHours() >= 14 && purchaseTime.getHours() <= 16;
-    timeOfPurchaseScore = isBetween2And4 ? 10 : 0;
-  } catch (error) {
-    console.error("Error parsing purchase time:", error);
-  }
+  const timeOfPurchaseScore = receipt.purchaseTime.getHours() >= 14 && receipt.purchaseTime.getHours() <= 16 ? 10 : 0;
 
   const totalScore =
     retailerNameScore +

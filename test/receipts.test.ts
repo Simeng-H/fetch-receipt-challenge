@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../src/app";
+import { receiptSchema } from "../src/schemas/receipt.schema";
 import { calculatePointsForReceipt } from "../src/services/receipt.service";
 
 // Integration tests
@@ -60,10 +61,35 @@ describe("Sending a valid receipt to the API results in the receipt being proces
 });
 
 // Unit tests
-const RECEIPT = {
+const ORIGINAL_RECEIPT = {
   retailer: "M&M Corner Market",
   purchaseDate: "2022-03-20",
   purchaseTime: "14:33",
+  items: [
+    {
+      shortDescription: "Gatorade",
+      price: "2.25",
+    },
+    {
+      shortDescription: "Gatorade",
+      price: "2.25",
+    },
+    {
+      shortDescription: "Gatorade",
+      price: "2.25",
+    },
+    {
+      shortDescription: "Gatorade",
+      price: "2.25",
+    },
+  ],
+  total: "9.00",
+};
+const PURCHASE_DATE_TIME = new Date(2022, 2, 20, 14, 33);
+const PARSED_RECEIPT = {
+  retailer: "M&M Corner Market",
+  purchaseDate: PURCHASE_DATE_TIME,
+  purchaseTime: PURCHASE_DATE_TIME,
   items: [
     {
       shortDescription: "Gatorade",
@@ -84,9 +110,22 @@ const RECEIPT = {
   ],
   total: 9.0,
 };
-describe("Receipts Points Calculation", () => {
+describe("Service layer correctly calculates points for a receipt", () => {
   it("gives the example receipt 109 points", () => {
-    const points = calculatePointsForReceipt(RECEIPT);
+    const points = calculatePointsForReceipt(PARSED_RECEIPT);
     expect(points).toBe(109);
+  });
+});
+describe("Parser correctly parses a receipt", () => {
+  it("parses the example receipt correctly", () => {
+    const parsedReceipt = receiptSchema.parse(ORIGINAL_RECEIPT);
+    expect(parsedReceipt.retailer).toBe(ORIGINAL_RECEIPT.retailer);
+    expect(parsedReceipt.purchaseDate.getDate()).toEqual(PARSED_RECEIPT.purchaseDate.getDate());
+    expect(parsedReceipt.purchaseTime.getHours()).toEqual(PARSED_RECEIPT.purchaseTime.getHours());
+    expect(parsedReceipt.items).toEqual(PARSED_RECEIPT.items);
+    expect(parsedReceipt.total).toEqual(PARSED_RECEIPT.total);
+  });
+  it("returns an error when the receipt is not valid", () => {
+    expect(() => receiptSchema.parse({})).toThrow();
   });
 });
