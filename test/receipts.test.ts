@@ -1,6 +1,8 @@
 import request from "supertest";
 import app from "../src/app";
+import { calculatePointsForReceipt } from "../src/services/receipt.service";
 
+// Integration tests
 const VALID_RECEIPT = {
   retailer: "Target",
   purchaseDate: "2022-01-01",
@@ -54,5 +56,37 @@ describe("Sending a valid receipt to the API results in the receipt being proces
   });
   it("returns a 400 status code when the receipt is not valid", async () => {
     await request(app).post("/receipts/process").send({}).expect(400);
+  });
+});
+
+// Unit tests
+const RECEIPT = {
+  retailer: "M&M Corner Market",
+  purchaseDate: "2022-03-20",
+  purchaseTime: "14:33",
+  items: [
+    {
+      shortDescription: "Gatorade",
+      price: 2.25,
+    },
+    {
+      shortDescription: "Gatorade",
+      price: 2.25,
+    },
+    {
+      shortDescription: "Gatorade",
+      price: 2.25,
+    },
+    {
+      shortDescription: "Gatorade",
+      price: 2.25,
+    },
+  ],
+  total: 9.0,
+};
+describe("Receipts Points Calculation", () => {
+  it("gives the example receipt 109 points", () => {
+    const points = calculatePointsForReceipt(RECEIPT);
+    expect(points).toBe(109);
   });
 });

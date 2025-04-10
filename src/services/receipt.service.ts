@@ -32,7 +32,7 @@ export function getReceiptPoints(id: string) {
  * @returns The total score of the receipt
  */
 export async function saveAndScoreReceipt(receipt: Receipt) {
-  const totalScore = ScoreReceipt(receipt);
+  const totalScore = calculatePointsForReceipt(receipt);
 
   // Save the receipt
   const receiptId = await saveReceiptScore(totalScore);
@@ -45,7 +45,7 @@ export async function saveAndScoreReceipt(receipt: Receipt) {
  * @pre receipt is of a valid format
  * @returns The total score of the receipt
  */
-export function ScoreReceipt(receipt: Receipt) {
+export function calculatePointsForReceipt(receipt: Receipt) {
   // 1 point for every alphanumeric character in the retailer name
   const retailerNameScore = [...receipt.retailer].filter((char) => /[a-zA-Z0-9]/.test(char)).length;
 
