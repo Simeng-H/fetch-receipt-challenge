@@ -3,7 +3,11 @@ import { receiptSchema } from "../schemas/receipt.schema";
 import { getReceiptPoints, saveAndScoreReceipt } from "../services/receipt.service";
 
 export async function processReceipt(req: Request, res: Response) {
-  const receipt = receiptSchema.parse(req.body);
+  const { success, data, error } = receiptSchema.safeParse(req.body);
+  if (!success) {
+    return res.status(400).json({ error: error.message });
+  }
+  const receipt = data;
   const receiptId = await saveAndScoreReceipt(receipt);
   res.status(200).json({ id: receiptId });
 }
